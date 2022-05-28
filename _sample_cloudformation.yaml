@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  TableName:
+    Description: Name of your dynamo db table
+    Type: String
+    Default: jstor-dynamodb-
+  UserName:
+    Description: Name of the user which will connect to the dynamodb
+    Type: String
+    Default: jstor-dynamodb-user-
+  KeyName:
+    Description: Name of the primary key (this name should be passed to the storageStrategy as keyAttribute
+    Type: String
+    Default: _id
+  KeyType:
+    Description: Specify if the primary key is going to be (S)tring/(N)umber/(B)inary
+    AllowedValues: ['S','N','B']
+    Type: String
+    Default: 'S'
+Resources:
+  Table:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Ref TableName
+      BillingMode: 'PAY_PER_REQUEST'
+      KeySchema:
+        - AttributeName: !Ref KeyName
+          KeyType: 'HASH'
+      AttributeDefinitions:
+        - AttributeName: !Ref KeyName
+          AttributeType: !Ref KeyType
+  User:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: !Ref UserName
+      Policies:
+        - PolicyName: !Ref UserName
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchGetItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}'
+  UserKey:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref User
+Outputs:
+  Bucket:
+    Description: 'Created table'
+    Value: !Ref Table
+  UserKey:
+    Description: 'Created user id'
+    Value: !Ref UserKey
+  UserKeySecret:
+    Description: 'Created user secret key'
+    Value: !GetAtt UserKey.SecretAccessKey

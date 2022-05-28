@@ -1,0 +1,29 @@
+{
+  "name": "jstor-dynamodb",
+  "version": "1.0.0",
+  "description": "jstor dynamodb storage client strategy",
+  "main": "jstor-dynamodb.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "keywords": [
+    "jstor",
+    "dynomodb",
+    "storage",
+    "client",
+    "strategy"
+  ],
+  "author": "Hendrik De Permentier",
+  "license": "Beerware",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.43.0",
+    "@aws-sdk/lib-dynamodb": "^3.44.0",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.5",
+    "babel-jest": "^27.3.1",
+    "jest": "^27.4.3"
+  }
+}
